@@ -21,16 +21,25 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
   onPageChange,
 }) => {
   const [current, setCurrent] = useState(currentPage);
+  const [startIndex, setStartIndex] = useState(0);
 
   const handlePageChange = (page: number) => {
     setCurrent(page);
     onPageChange(page);
+
+    if (page > startIndex + 10) {
+      setStartIndex(page - 10);
+    } else if (page <= startIndex) {
+      setStartIndex(Math.max(0, page - 1));
+    }
   };
 
   const pagesArray = Array.from(
     { length: totalPages },
     (_, index) => index + 1
   );
+
+  const visiblePages = pagesArray.slice(startIndex, startIndex + 10);
 
   return (
     <Pagination>
@@ -44,7 +53,7 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
           )}
         </PaginationItem>
 
-        {pagesArray.slice(0, 3).map((page) => (
+        {visiblePages.map((page) => (
           <PaginationItem key={page}>
             <PaginationLink
               href='#'
@@ -56,7 +65,7 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
           </PaginationItem>
         ))}
 
-        {totalPages > 3 && current < totalPages - 1 && (
+        {totalPages > 10 && current < totalPages - 1 && (
           <PaginationItem>
             <PaginationEllipsis />
           </PaginationItem>
