@@ -8,7 +8,7 @@ export const fetchAllPokemon = async (): Promise<Pokemon[]> => {
     const response = await axios.get(`${POKE_API_URL}pokemon?limit=1000`);
     return response.data.results;
   } catch (error) {
-    console.error('Error fetching Pokémon:', error);
+    console.error('Error fetching Pokemon:', error);
     return [];
   }
 };

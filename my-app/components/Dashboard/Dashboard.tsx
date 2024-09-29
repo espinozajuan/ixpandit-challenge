@@ -16,12 +16,14 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [totalPages, setTotalPages] = useState(0);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const itemsPerPage = 10;
 
   useEffect(() => {
     const loadPokemon = async () => {
       setLoading(true);
+      setError(null);
       try {
         const allPokemon = await fetchAllPokemon();
         const sortedPokemon = allPokemon.sort((a, b) =>
@@ -32,7 +34,8 @@ export default function Dashboard() {
         setTotalPages(Math.ceil(sortedPokemon.length / itemsPerPage));
         setHasLoaded(true);
       } catch (error) {
-        console.error('Error fetching Pokémon:', error);
+        console.error('Error fetching Pokemon:', error);
+        setError('Failed to fetch Pokemon. Please try again later.');
       }
       setLoading(false);
     };
@@ -92,6 +95,8 @@ export default function Dashboard() {
         <div className='flex justify-center items-center h-full'>
           <LoadingSpinner className='h-8 w-8' />
         </div>
+      ) : error ? (
+        <p className='text-center text-red-500'>{error}</p>
       ) : filteredPokemon.length === 0 && hasLoaded ? (
         <p className='text-center'>No Pokemon found.</p>
       ) : (
